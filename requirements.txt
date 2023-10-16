@@ -1,0 +1,4 @@
+# Miniforge, e.g., conda
+xtensor
+xsimd
+cmake
