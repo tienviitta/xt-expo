@@ -17,4 +17,8 @@ void ex1_rnd_run();
 
 void ex1_csv_run();
 
+void ex1_qck_run();
+void ex1_red_run();
+void ex1_man_run();
+
 #endif // EX1_H_

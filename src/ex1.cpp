@@ -1,3 +1,4 @@
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <istream>
@@ -12,7 +13,11 @@
 #include <xtensor/xtensor_forward.hpp>
 #include <xtensor/xview.hpp>
 
+namespace fs = std::filesystem;
+
 /** xtensor
+
+Usage:
 
 Three container classes implementing multidimensional arrays are provided: xt::xarray and
 xt::xtensor and xt::xtensor_fixed.
@@ -76,6 +81,16 @@ headers. This can be achieved the following ways:
 cmake command.
 - or create a header where you define all the macros you want and then include the headers
 you need. Then include this header whenever you need xtensor in your project.
+
+Basics:
+
+Tensor types
+- xarray<T>: tensor that can be reshaped to any number of dimensions.
+- xtensor<T, N>: tensor with a number of dimensions set to N at compile time.
+- xtensor_fixed<T, xshape<I, J, K>: tensor whose shape is fixed at compile time.
+- xchunked_array<CS>: chunked array using the CS chunk storage.
+
+
 
 */
 
@@ -242,11 +257,59 @@ void ex1_rnd_run() {
     std::cout << a2 << std::endl;
     xt::random::shuffle(a2);
     std::cout << a2 << std::endl;
+    auto shape = a2.shape();
+    std::cout << xt::adapt(shape) << std::endl;
 }
 
 void ex1_csv_run() {
+    std::cout << "Current path is: " << fs::current_path() << '\n';
     std::ifstream in_file;
-    in_file.open("./../tv0/info_bits.txt"); // Note! From the build directory!
+    // in_file.open("/home/peva/projects/xt-expo/tv0/info_bits.txt");
+    in_file.open("./../tv0/info_bits.txt");
     auto info_bits = xt::load_csv<short>(in_file);
     std::cout << xt::transpose(info_bits) << std::endl;
+}
+
+void ex1_qck_run() {
+    xt::xarray<double> a0 = xt::arange<double>(0., 6.).reshape({2, 3});
+    std::cout << a0 << std::endl;
+
+    xt::xarray<double> a1 = {{1, 2, 3}};
+    xt::xarray<double> b2 = {{2, 3, 4}};
+    auto c0 = xt::concatenate(xt::xtuple(a1, b2));
+    std::cout << c0 << std::endl;
+    auto c1 = xt::concatenate(xt::xtuple(a1, b2), 1);
+    std::cout << c1 << std::endl;
+}
+
+void ex1_red_run() {
+    // Sum
+    xt::xarray<int> a1 = {{1, 2, 3}, {4, 5, 6}};
+    xt::xarray<int> r0 = xt::sum(a1, {1});
+    std::cout << r0 << std::endl;
+    // Outputs {6, 15}
+    xt::xarray<int> r1 = xt::sum(a1);
+    std::cout << r1 << std::endl;
+    // Outputs {21}, i.e. r1 is a 0D-tensor
+    int r2 = xt::sum(a1)();
+    std::cout << r2 << std::endl;
+    // Outputs 21
+    // Prod
+    xt::xarray<int> a2 = {{1, 2}, {3, 4}};
+    xt::xarray<int> r3 = xt::prod(a2, {1});
+    std::cout << r3 << std::endl;
+    xt::xarray<int> r4 = xt::prod(a2);
+    std::cout << r4 << std::endl;
+    int r5 = xt::prod(a2)();
+    std::cout << r5 << std::endl;
+    xt::xarray<double> b0 = xt::cumsum(a1, 1);
+    std::cout << b0 << std::endl;
+}
+
+void ex1_man_run() {
+    xt::xarray<int> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    auto t0 = xt::roll(a, 2);
+    std::cout << t0 << std::endl;
+    auto t1 = xt::roll(a, 2, 1);
+    std::cout << t1 << std::endl;
 }

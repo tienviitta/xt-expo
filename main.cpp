@@ -17,6 +17,10 @@ int main(int argc, char *argv[]) {
     ex1_rnd_run();
 
     ex1_csv_run();
+
+    ex1_qck_run();
+    ex1_red_run();
+    ex1_man_run();
     
     return 0;
 }
