@@ -23,6 +23,7 @@ int main(int argc, char *argv[]) {
     // ex1_man_run();
 
     ex1_crc_run();
+    ex2_crc_run();
     // ex1_mpow_run();
 
     return 0;
