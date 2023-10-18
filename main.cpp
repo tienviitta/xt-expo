@@ -22,9 +22,12 @@ int main(int argc, char *argv[]) {
     // ex1_red_run();
     // ex1_man_run();
 
-    ex1_crc_run();
-    ex2_crc_run();
+    // ex1_crc_run();
+    // ex2_crc_run();
     // ex1_mpow_run();
+
+    ex1_cmplx_run();
+    ex2_cmplx_run();
 
     return 0;
 }

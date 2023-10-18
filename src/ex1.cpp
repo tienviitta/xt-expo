@@ -1,12 +1,16 @@
-#include "xtensor-blas/xlinalg.hpp"
+#include <complex>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <istream>
 #include <vector>
+#include <xtensor-blas/xlinalg.hpp>
+#include <xtensor-fftw/basic.hpp>
+#include <xtensor-fftw/helper.hpp>
 #include <xtensor/xadapt.hpp>
 #include <xtensor/xarray.hpp>
 #include <xtensor/xbuilder.hpp>
+#include <xtensor/xcomplex.hpp>
 #include <xtensor/xcsv.hpp>
 #include <xtensor/xio.hpp>
 #include <xtensor/xmanipulation.hpp>
@@ -483,4 +487,30 @@ void ex1_mpow_run() {
     }
 }
 
-// void ex1_cmplx_run() {}
+void ex1_cmplx_run() {
+    // Note! Different from NumPy, the first argument is the shape of the output array!
+    // Using a random number function from xtensor actually returns a lazy generator. That
+    // means, accessing the same element of a random number generator does not give the
+    // same random number if called twice!
+    xt::random::seed(0x123456);
+    // xt::random::seed(time(NULL));
+    xt::xarray<std::complex<double>> a1 = xt::zeros<std::complex<double>>({4, 3});
+    xt::real(a1) = xt::random::randn({4, 3}, 0.0, 1.0);
+    xt::imag(a1) = xt::random::randn({4, 3}, 0.0, 1.0);
+    std::cout << a1 << std::endl;
+}
+
+void ex2_cmplx_run() {
+    xt::random::seed(0x123456);
+    xt::xarray<std::complex<double>> a1 = xt::zeros<std::complex<double>>({8});
+    xt::real(a1) = xt::random::randn({8}, 0.0, 1.0);
+    xt::imag(a1) = xt::random::randn({8}, 0.0, 1.0);
+    std::cout << xt::print_options::line_width(160) << "a1:" << std::endl
+              << a1 << std::endl;
+    auto a1_fft = xt::fftw::fft(a1);
+    std::cout << xt::print_options::line_width(160) << "a1_fft:" << std::endl
+              << a1_fft << std::endl;
+    auto a1_fftshift = xt::fftw::fftshift(a1_fft);
+    std::cout << xt::print_options::line_width(160) << "a1_fftshift:" << std::endl
+              << a1_fftshift << std::endl;
+}

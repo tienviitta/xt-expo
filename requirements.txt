@@ -2,3 +2,16 @@
 xtensor
 xsimd
 cmake
+
+# Revised
+xtl
+xtensor
+xtensor-blas
+xtensor-fftw
+fftw
+blas
+lapack
+
+# Misc. (?)
+libblas
+liblapack

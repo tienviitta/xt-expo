@@ -25,4 +25,7 @@ void ex1_crc_run();
 void ex2_crc_run();
 void ex1_mpow_run();
 
+void ex1_cmplx_run();
+void ex2_cmplx_run();
+
 #endif // EX1_H_
