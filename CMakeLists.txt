@@ -7,6 +7,7 @@ set(CMAKE_CXX_EXTENSIONS Off)
 
 find_package(xtl REQUIRED)
 find_package(xtensor REQUIRED)
+find_package(xtensor-blas REQUIRED)
 
 include(CTest)
 enable_testing()
@@ -18,7 +19,9 @@ if(MSVC)
 endif()
 
 target_include_directories(xt_ex PRIVATE src)
-target_link_libraries(xt_ex xtensor xtensor::optimize xtensor::use_xsimd)
+
+# target_link_libraries(xt_ex xtensor xtensor::optimize xtensor::use_xsimd)
+target_link_libraries(xt_ex xtensor xtensor::optimize xtensor-blas)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})

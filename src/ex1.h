@@ -21,4 +21,7 @@ void ex1_qck_run();
 void ex1_red_run();
 void ex1_man_run();
 
+void ex1_crc_run();
+void ex1_mpow_run();
+
 #endif // EX1_H_

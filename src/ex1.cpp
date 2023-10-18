@@ -1,3 +1,4 @@
+#include "xtensor-blas/xlinalg.hpp"
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -5,11 +6,14 @@
 #include <vector>
 #include <xtensor/xadapt.hpp>
 #include <xtensor/xarray.hpp>
+#include <xtensor/xbuilder.hpp>
 #include <xtensor/xcsv.hpp>
 #include <xtensor/xio.hpp>
 #include <xtensor/xmanipulation.hpp>
+#include <xtensor/xmath.hpp>
 #include <xtensor/xoperation.hpp>
 #include <xtensor/xrandom.hpp>
+#include <xtensor/xslice.hpp>
 #include <xtensor/xtensor_forward.hpp>
 #include <xtensor/xview.hpp>
 
@@ -312,4 +316,92 @@ void ex1_man_run() {
     std::cout << t0 << std::endl;
     auto t1 = xt::roll(a, 2, 1);
     std::cout << t1 << std::endl;
+}
+
+void ex1_crc_run() {
+    std::cout << "Current path is: " << fs::current_path() << '\n';
+    std::ifstream in_file;
+    in_file.open("./../dl/tv0/info_bits.txt");
+    xt::xarray<int> msg = xt::ravel(xt::load_csv<short>(in_file));
+    std::cout << "msg:" << std::endl << xt::transpose(msg) << std::endl;
+
+    // clang-format off
+    xt::xarray<int> crc_r_v = {
+        0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        1, 0, 1, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        1, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0,
+        1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0,
+        0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,
+        1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
+        0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
+        0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+        1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    };
+    // clang-format on
+
+    int step = 32;
+    int pad = step - msg.size();
+
+    xt::xarray<int> crc_r = crc_r_v.reshape({step, step});
+    std::cout << xt::print_options::line_width(160) << xt::print_options::edge_items(20)
+              << "crc_r:" << std::endl
+              << crc_r << std::endl;
+
+    xt::xarray<int> crc_s = xt::zeros<int>({step});
+    std::cout << xt::print_options::line_width(160) << "crc_s:" << std::endl
+              << xt::transpose(crc_s) << std::endl;
+
+    xt::xarray<int> p_msg = xt::concatenate(xt::xtuple(msg, xt::zeros<int>({pad})));
+    std::cout << xt::print_options::line_width(160) << "p_msg:" << std::endl
+              << xt::transpose(p_msg) << std::endl;
+
+    xt::xarray<int> crc_p = crc_s ^ p_msg;
+    std::cout << xt::print_options::line_width(160) << "crc_p:" << std::endl
+              << xt::transpose(crc_p) << std::endl;
+
+    for (int j = 0; j < step; ++j) {
+        auto crc_r_r = xt::view(crc_r, j, xt::all());
+        std::cout << xt::print_options::line_width(160) << "crc_r_r:" << std::endl
+                  << xt::transpose(crc_r_r) << std::endl;
+        xt::xarray<int> crc_v = crc_r_r & crc_p;
+        // std::cout << xt::print_options::line_width(160) << "crc_v:" << std::endl
+        //           << xt::transpose(crc_v) << std::endl;
+        crc_s(j) = xt::sum<int>(crc_v)(0);
+    }
+
+    crc_s %= 2;
+    std::cout << xt::print_options::line_width(160) << "crc_s:" << std::endl
+              << xt::transpose(crc_s) << std::endl;
+}
+
+void ex1_mpow_run() {
+    xt::xarray<double> arr1{{1, 1, 0}, {1, 0, 1}, {0, 0, 0}};
+    std::cout << "arr1:" << std::endl << arr1 << std::endl;
+    for (long n = 2; n < 8; ++n) {
+        xt::xarray<double> arr_n = xt::linalg::matrix_power(arr1, n);
+        std::cout << "arr^" << n << ":" << std::endl << arr_n << std::endl;
+    }
 }
