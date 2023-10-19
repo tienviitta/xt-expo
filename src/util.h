@@ -2,7 +2,10 @@
 #define UTIL_H_
 
 #include "encdl.h"
+#include <filesystem>
 
-void readParams(const char *fn, params_s *params);
+namespace fs = std::filesystem;
+
+void readParams(fs::path path, params_s *params);
 
 #endif // UTIL_H_

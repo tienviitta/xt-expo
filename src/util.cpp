@@ -1,5 +1,6 @@
 #include "util.h"
 #include "encdl.h"
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <istream>
@@ -8,10 +9,14 @@
 #include <xtensor/xio.hpp>
 #include <xtensor/xmanipulation.hpp>
 
-void readParams(const char *fn, params_s *params) {
+namespace fs = std::filesystem;
+
+void readParams(fs::path path, params_s *params) {
+    path /= "params.txt";
     std::ifstream in_file;
-    in_file.open(fn);
+    in_file.open(path);
     xt::xarray<int> params_f = xt::ravel(xt::load_csv<int>(in_file));
+    in_file.close();
     std::cout << "params_f:" << std::endl << xt::transpose(params_f) << std::endl;
     for (int i = 0; i < params_f.size(); ++i) {
         switch (i) {
@@ -34,5 +39,4 @@ void readParams(const char *fn, params_s *params) {
             break;
         }
     }
-    in_file.close();
 }

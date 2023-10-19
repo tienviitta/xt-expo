@@ -1,16 +1,24 @@
 #include "encdl.h"
 #include "util.h"
+#include <cstdlib>
+#include <filesystem>
 #include <iostream>
+
+namespace fs = std::filesystem;
 
 int main(int argc, char *argv[]) {
 
+    // CLI args
+    for (int i = 1; i < argc; ++i)
+        std::cout << argv[i] << "\n";
+    fs::path paramsPath{argv[1]}; // Note! Testcase path as argv[1]!
+
     // Read params
     params_s params;
-    const char params_fn[] = "./dl/tv0/params.txt";
-    readParams(params_fn, &params);
+    readParams(paramsPath, &params);
 
     // Encoding
-    encDl(&params);
+    encDl(paramsPath, &params);
 
     // ex1_run();
     // ex2_run();

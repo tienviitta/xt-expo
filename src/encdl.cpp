@@ -1,4 +1,5 @@
 #include "encdl.h"
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <istream>
@@ -12,23 +13,28 @@
 #include <xtensor/xoperation.hpp>
 #include <xtensor/xtensor_forward.hpp>
 
-void encDl(params_s *params) {
+namespace fs = std::filesystem;
+
+void encDl(fs::path path, params_s *params) {
 
     // Input file
     std::ifstream in_file;
 
     // Read info bits
-    in_file.open("./dl/tv0/info_bits.txt");
+    fs::path infoBitsPath = path / "info_bits.txt";
+    in_file.open(infoBitsPath);
     xt::xarray<int> infoBits = xt::ravel(xt::load_csv<int>(in_file));
     std::cout << "infoBits:" << std::endl << xt::transpose(infoBits) << std::endl;
     in_file.close();
 
     // Read CRC matrix
-    in_file.open("./dl/tv0/crc_gen_m.txt");
+    fs::path crcGenVecPath = path / "crc_gen_m.txt";
+    in_file.open(crcGenVecPath);
     xt::xarray<int> crcGenVec = xt::ravel(xt::load_csv<short>(in_file));
     xt::xarray<int> crcGenMtx = xt::transpose(crcGenVec.reshape({params->P, params->K}));
     std::cout << "crcGenMtx:" << std::endl
-              << xt::print_options::line_width(160) << crcGenMtx << std::endl;
+              << xt::print_options::line_width(160) << xt::print_options::edge_items(20)
+              << crcGenMtx << std::endl;
     in_file.close();
 
     // CRC computation
@@ -38,7 +44,8 @@ void encDl(params_s *params) {
     std::cout << "crcBits:" << std::endl << xt::transpose(crcBits) << std::endl;
 
     // Read RNTI bits
-    in_file.open("./dl/tv0/rnti_bits.txt");
+    fs::path rntiBitsPath = path / "rnti_bits.txt";
+    in_file.open(rntiBitsPath);
     xt::xarray<int> rntiBits = xt::ravel(xt::load_csv<int>(in_file));
     std::cout << "rntiBits:" << std::endl << xt::transpose(rntiBits) << std::endl;
     in_file.close();
@@ -55,7 +62,8 @@ void encDl(params_s *params) {
               << xt::transpose(infoCrcBits) << std::endl;
 
     // Read CRC interleaver pattern
-    in_file.open("./dl/tv0/crc_interleaver_pattern.txt");
+    fs::path ctrlIntrlPath = path / "crc_interleaver_pattern.txt";
+    in_file.open(ctrlIntrlPath);
     xt::xarray<int> crcIntrl = xt::ravel(xt::load_csv<int>(in_file));
     std::cout << xt::print_options::line_width(160) << "crcIntrl:" << std::endl
               << xt::transpose(crcIntrl) << std::endl;
@@ -68,7 +76,8 @@ void encDl(params_s *params) {
               << xt::transpose(intrlBits) << std::endl;
 
     // Read CRC interleaver pattern
-    in_file.open("./dl/tv0/info_bit_pattern.txt");
+    fs::path infoIntrlPath = path / "info_bit_pattern.txt";
+    in_file.open(infoIntrlPath);
     xt::xarray<int> infoIntrl = xt::ravel(xt::load_csv<int>(in_file));
     std::cout << xt::print_options::line_width(160) << "infoIntrl:" << std::endl
               << xt::transpose(infoIntrl) << std::endl;
@@ -81,7 +90,8 @@ void encDl(params_s *params) {
               << xt::transpose(frozenBits) << std::endl;
 
     // Read encoder matrix
-    in_file.open("./dl/tv0/enc_gen_m.txt");
+    fs::path encGenVecPath = path / "enc_gen_m.txt";
+    in_file.open(encGenVecPath);
     xt::xarray<int> encGenVec = xt::ravel(xt::load_csv<short>(in_file));
     xt::xarray<int> encGenMtx = xt::transpose(encGenVec.reshape({params->N, params->N}));
     std::cout << "encGenMtx:" << std::endl
@@ -96,7 +106,8 @@ void encDl(params_s *params) {
               << xt::transpose(encBits) << std::endl;
 
     // Read rate matching pattern
-    in_file.open("./dl/tv0/rate_matching_pattern.txt");
+    fs::path encIntrlPath = path / "rate_matching_pattern.txt";
+    in_file.open(encIntrlPath);
     xt::xarray<int> encIntrl = xt::ravel(xt::load_csv<int>(in_file));
     std::cout << xt::print_options::line_width(160) << "encIntrl:" << std::endl
               << xt::transpose(encIntrl) << std::endl;
@@ -109,7 +120,8 @@ void encDl(params_s *params) {
               << xt::transpose(rmBits) << std::endl;
 
     // Read rate matched reference bits
-    in_file.open("./dl/tv0/rm_bits.txt");
+    fs::path rmRefsPath = path / "rm_bits.txt";
+    in_file.open(rmRefsPath);
     xt::xarray<int> rmRefs = xt::ravel(xt::load_csv<int>(in_file));
     std::cout << xt::print_options::line_width(160) << "rmRefs:" << std::endl
               << xt::transpose(rmRefs) << std::endl;

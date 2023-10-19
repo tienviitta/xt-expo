@@ -1,6 +1,10 @@
 #ifndef ENCDL_H_
 #define ENCDL_H_
 
+#include <filesystem>
+
+namespace fs = std::filesystem;
+
 typedef struct params_s {
     int A;
     int P;
@@ -9,6 +13,6 @@ typedef struct params_s {
     int N;
 } params_s;
 
-void encDl(params_s *params);
+void encDl(fs::path path, params_s *params);
 
 #endif // ENCDL_H_
