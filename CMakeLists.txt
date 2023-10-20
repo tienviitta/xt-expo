@@ -14,7 +14,16 @@ include(CTest)
 enable_testing()
 
 # add_executable(xt_ex main.cpp src/ex1.cpp src/ex1.h)
-add_executable(xt_ex main.cpp src/encdl.cpp src/encdl.h src/util.cpp src/util.h)
+add_executable(
+    xt_ex 
+    main.cpp 
+    src/encdl.cpp 
+    src/encdl.h 
+    src/ex1.cpp 
+    src/ex1.h 
+    src/util.cpp 
+    src/util.h
+)
 
 if(MSVC)
     set(CMAKE_EXE_LINKER_FLAGS /MANIFEST:NO)

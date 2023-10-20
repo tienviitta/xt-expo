@@ -1,4 +1,5 @@
 #include "encdl.h"
+#include "ex1.h"
 #include "util.h"
 #include <cstdlib>
 #include <filesystem>
@@ -31,6 +32,8 @@ int main(int argc, char *argv[]) {
     // ex4_vec_run();
 
     // ex1_view_run();
+    ex2_ind_run();
+    ex3_ind_run();
     // ex1_ind_run();
     // ex1_rnd_run();
 

@@ -252,6 +252,28 @@ void ex1_ind_run() {
     std::cout << idx_f << std::endl;
 }
 
+void ex2_ind_run() {
+    xt::xarray<int> a = xt::arange<size_t>(24);
+    std::cout << xt::print_options::line_width(160) << a << std::endl;
+    // xt::xarray<int>
+    auto sv = xt::strided_view(a, {xt::range(0, 24, 2)});
+    sv *= 2;
+    std::cout << xt::print_options::line_width(160) << sv << std::endl;
+    std::cout << xt::print_options::line_width(160) << a << std::endl;
+}
+
+void ex3_ind_run() {
+    xt::random::seed(0x123456);
+    xt::xarray<std::complex<double>> a = xt::zeros<std::complex<double>>({24});
+    xt::real(a) = xt::random::randn({24}, 0.0, 1.0);
+    xt::imag(a) = xt::random::randn({24}, 0.0, 1.0);
+    std::cout << xt::print_options::line_width(160) << a << std::endl;
+    auto sv = xt::strided_view(a, {xt::range(0, 24, 2)});
+    sv *= -2.0;
+    std::cout << xt::print_options::line_width(160) << sv << std::endl;
+    std::cout << xt::print_options::line_width(160) << a << std::endl;
+}
+
 void ex1_rnd_run() {
     // Note! Different from NumPy, the first argument is the shape of the output array!
     // Using a random number function from xtensor actually returns a lazy generator. That

@@ -13,6 +13,8 @@ void ex4_vec_run();
 
 void ex1_view_run();
 void ex1_ind_run();
+void ex2_ind_run();
+void ex3_ind_run();
 void ex1_rnd_run();
 
 void ex1_csv_run();
